@@ -12,25 +12,33 @@ class GildedRose
   end
 class ItemWrapper < SimpleDelegator
 
+  def increase_quality
+    self.quality += 1 if quality < 50
+  end
+
+  def decrease_quality
+    self.quality -= 1 if quality > 0
+  end
+  def age
+      self.sell_in -= 1 if name != "Sulfuras, Hand of Ragnaros"
+  end
+
   def update
       if name != "Aged Brie" and name != "Backstage passes to a TAFKAL80ETC concert"
         if quality > 0
           if name != "Sulfuras, Hand of Ragnaros"
-            self.quality -= 1
+            decrease_quality
           end
         end
       else
-        if quality < 50
-          quality = quality + 1
+          increase_quality
           if name == "Backstage passes to a TAFKAL80ETC concert"
             if sell_in < 11
-              if quality < 50
-                self.quality += 1
+                increase_quality
               end
             end
             if sell_in < 6
-              if quality < 50
-                self.quality += 1
+                increase_quality
               end
             end
           end
@@ -44,15 +52,14 @@ class ItemWrapper < SimpleDelegator
           if name != "Backstage passes to a TAFKAL80ETC concert"
             if quality > 0
               if name != "Sulfuras, Hand of Ragnaros"
-                self.quality -= 1
+                decrease_quality
               end
             end
           else
             self.quality -= item.quality
           end
         else
-          if quality < 50
-            self.quality += 1
+            increase_quality
           end
         end
       end
