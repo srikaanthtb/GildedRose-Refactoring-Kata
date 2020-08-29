@@ -12,6 +12,12 @@ class GildedRose
   end
 class ItemWrapper < SimpleDelegator
 
+  def update
+    return if name == "Sulfuras, Hand of Ragnaros"
+    update_quality
+    age
+  end
+
   def increase_quality
     self.quality += 1 if quality < 50
   end
@@ -23,7 +29,7 @@ class ItemWrapper < SimpleDelegator
       self.sell_in -= 1 if name != "Sulfuras, Hand of Ragnaros"
   end
 
-  def update
+  def update_quality
       if name != "Aged Brie" and name != "Backstage passes to a TAFKAL80ETC concert"
         if quality > 0
           if name != "Sulfuras, Hand of Ragnaros"
@@ -62,10 +68,6 @@ class ItemWrapper < SimpleDelegator
             increase_quality
           end
         end
-      end
-    end
-  end
-end
 
 class Item
   attr_accessor :name, :sell_in, :quality
