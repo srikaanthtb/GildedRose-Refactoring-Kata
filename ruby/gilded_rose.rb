@@ -1,4 +1,5 @@
 require 'delegate'
+
 class GildedRose
 
   def initialize(items)
@@ -10,12 +11,44 @@ class GildedRose
       ItemWrapper.new(item).update
     end
   end
-class ItemWrapper < SimpleDelegator
+end
 
+class ItemWrapper < SimpleDelegator
   def update
     return if name == "Sulfuras, Hand of Ragnaros"
-    update_quality
+
     age
+    update_quality
+  end
+
+  def age
+    self.sell_in -= 1 if name != "Sulfuras, Hand of Ragnaros"
+  end
+
+  def update_quality
+    if name == "Aged Brie" || name == "Backstage passes to a TAFKAL80ETC concert"
+      increase_quality
+      if name == "Backstage passes to a TAFKAL80ETC concert"
+        if sell_in < 11
+          increase_quality
+        end
+        if sell_in < 6
+          increase_quality
+        end
+      end
+    else
+      decrease_quality
+    end
+
+    if sell_in < 0
+      if name == "Aged Brie"
+        increase_quality
+      elsif name == "Backstage passes to a TAFKAL80ETC concert"
+        self.quality -= quality
+      else
+        decrease_quality
+      end
+    end
   end
 
   def increase_quality
@@ -25,49 +58,7 @@ class ItemWrapper < SimpleDelegator
   def decrease_quality
     self.quality -= 1 if quality > 0
   end
-  def age
-      self.sell_in -= 1 if name != "Sulfuras, Hand of Ragnaros"
-  end
-
-  def update_quality
-      if name != "Aged Brie" and name != "Backstage passes to a TAFKAL80ETC concert"
-        if quality > 0
-          if name != "Sulfuras, Hand of Ragnaros"
-            decrease_quality
-          end
-        end
-      else
-          increase_quality
-          if name == "Backstage passes to a TAFKAL80ETC concert"
-            if sell_in < 11
-                increase_quality
-              end
-            end
-            if sell_in < 6
-                increase_quality
-              end
-            end
-          end
-        end
-      end
-      if item.name != "Sulfuras, Hand of Ragnaros"
-        self.sell_in -= 1
-      end
-      if item.sell_in < 0
-        if name != "Aged Brie"
-          if name != "Backstage passes to a TAFKAL80ETC concert"
-            if quality > 0
-              if name != "Sulfuras, Hand of Ragnaros"
-                decrease_quality
-              end
-            end
-          else
-            self.quality -= item.quality
-          end
-        else
-            increase_quality
-          end
-        end
+end
 
 class Item
   attr_accessor :name, :sell_in, :quality
