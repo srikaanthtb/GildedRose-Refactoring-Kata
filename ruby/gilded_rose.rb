@@ -41,6 +41,14 @@ class ItemWrapper < SimpleDelegator
         if sell_in < 0
           decrease_quality
         end
+      elsif name == "Conjured Mana Cake"
+        decrease_quality
+        decrease_quality
+        if sell_in < 0
+        decrease_quality
+        decrease_quality
+      end
+      end
       end
     else
       decrease_quality
